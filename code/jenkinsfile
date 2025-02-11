@@ -12,13 +12,13 @@ pipeline {
         stage('Build') {
             steps {
                 // Construye la imagen Docker
-                sh 'docker compose --progress plain build'
+                sh 'docker-compose --progress plain build'
             }
         }
         stage('Test') {
             steps {
                 // Ejecuta las pruebas dentro de la imagen Docker
-                sh 'compose --progress plain run --rm server python -m pytest test.py -s'
+                sh 'docker-compose --progress plain run --rm server python -m pytest test.py -s'
             }
         }
         stage('Push to Docker Hub') {
