@@ -1,0 +1,24 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Build') {
+            steps {
+                // Construye la imagen Docker
+                sh 'echo "Construir imagen"'
+            }
+        }
+        stage('Test') {
+            steps {
+                // Ejecuta las pruebas dentro de la imagen Docker
+                sh 'pytest -s'
+            }
+        }
+        stage('Push to Docker Hub') {
+            steps {
+                // Construye la imagen Docker
+                sh 'echo "Subir imagen a un registry de imágenes"'
+            }
+        }
+    }
+}
