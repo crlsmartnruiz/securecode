@@ -1,9 +1,5 @@
 pipeline {
     agent any
-    environment {
-        OPENAI_API_KEY = sh 'aws secretsmanager get-secret-value --secret-id openai-key | jq -r ".SecretString" | jq ".apiKey"'
-    }
-
 
     stages {
         stage('Checkout') {
@@ -12,7 +8,6 @@ pipeline {
             }
         }
        
-
         stage('Build') {
             steps {
                 dir('code') {
@@ -23,13 +18,15 @@ pipeline {
         stage('Test') {
             steps {
                 dir('code') {
-                    sh 'docker-compose --progress plain run --rm -e OPENAI_API_KEY=${OPENAI_API_KEY} server python -m pytest test.py -s'
+                    ansiColor('xterm') {
+                        sh 'docker-compose --progress plain run --rm server python -m pytest test.py -s'
+                    }
                 }
             }
         }
         stage('Push to Docker Hub') {
             steps {
-                sh 'echo "Subir imagen a un registry de imágenes"'
+                echo "Subir imagen a un registry de imágenes"
             }
         }
     }
