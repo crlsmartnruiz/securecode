@@ -2,6 +2,13 @@ pipeline {
     agent any
 
     stages {
+        stage('Checkout') {
+            steps {
+                checkout scmGit(branches: [[name: '**']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/crlsmartnruiz/securecode']])
+            }
+        }
+       
+
         stage('Build') {
             steps {
                 // Construye la imagen Docker
