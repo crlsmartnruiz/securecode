@@ -11,19 +11,20 @@ pipeline {
 
         stage('Build') {
             steps {
-                // Construye la imagen Docker
-                sh 'docker-compose --progress plain build'
+                dir('code') {
+                    sh 'docker-compose --progress plain build'
+                }
             }
         }
         stage('Test') {
             steps {
-                // Ejecuta las pruebas dentro de la imagen Docker
-                sh 'docker-compose --progress plain run --rm server python -m pytest test.py -s'
+                dir('code') {
+                    sh 'docker-compose --progress plain run --rm server python -m pytest test.py -s'
+                }
             }
         }
         stage('Push to Docker Hub') {
             steps {
-                // Construye la imagen Docker
                 sh 'echo "Subir imagen a un registry de imágenes"'
             }
         }
