@@ -1,8 +1,6 @@
+from main import get_secret
+import os
 
-from main import call_openai_api
-
-def test_call_openai_api():
-    response = call_openai_api("Hola")
-
-    print(response)
-    assert response == "¡Hola! ¿Cómo puedo ayudarte hoy?"
+def test():
+    secret_name = "prod/clave-prueba" if os.getenv("ENVIRONMENT", "dev") == "prod" else "dev/clave-prueba"
+    assert "clave-prueba-dev" == get_secret(secret_name)
