@@ -19,7 +19,7 @@ pipeline {
             steps {
                 dir('code') {
                     ansiColor('xterm') {
-                        sh 'docker-compose --progress plain run --rm server python -m pytest test.py -s --color yes'
+                        sh 'docker-compose --progress plain run --rm server python -m pytest test.py -s --color yes -vvv'
                     }
                 }
             }
