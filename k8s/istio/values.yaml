@@ -1,0 +1,2 @@
+crt: ref+awssecrets://securecode-httpbin-tls-crt
+key: ref+awssecrets://securecode-httpbin-tls-key

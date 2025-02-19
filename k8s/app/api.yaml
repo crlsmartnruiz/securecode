@@ -1,3 +1,9 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: my-service-account
+  namespace: default
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -12,25 +18,16 @@ spec:
       labels:
         app: api
     spec:
+      serviceAccountName: my-service-account
       containers:
       - name: api
-        image: code-server:latest # Reemplaza con tu imagen Docker
-        imagePullPolicy: Never
+        image: 864981735845.dkr.ecr.eu-west-2.amazonaws.com/securecode:latest # Reemplaza con tu imagen Docker
+        imagePullPolicy: IfNotPresent
         env:
           - name: PORT
             value: "5000"
-          - name: AWS_DEFAULT_REGION
-            value: eu-west-2
-          - name: AWS_ACCESS_KEY_ID
-            valueFrom:
-              secretKeyRef:
-                name: aws-credentials
-                key: AWS_ACCESS_KEY_ID
-          - name: AWS_SECRET_ACCESS_KEY
-            valueFrom:
-              secretKeyRef:
-                name: aws-credentials
-                key: AWS_SECRET_ACCESS_KEY
+          - name: ENVIRONMENT
+            value: "prod"
         ports:
           - containerPort: 5000
         livenessProbe:
@@ -49,4 +46,4 @@ spec:
   - name: http
     port: 80
     targetPort: 5000
-  type: LoadBalancer # Cambia a ClusterIP si solo necesitas acceso interno
+  type: ClusterIP # Cambia a ClusterIP si solo necesitas acceso interno
