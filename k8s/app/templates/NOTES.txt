@@ -11,6 +11,8 @@ export INGRESS_HOST=$(nslookup $INGRESS_HOST | grep Address | awk '/Address:/ {p
 
 aws eks create-pod-identity-association --cluster-name demo-cluster --role-arn arn:aws:iam::864981735845:role/my-role --namespace {{ .Release.Namespace }} --service-account {{ include "app.serviceAccountName" . }} --region eu-west-2
 
-kubectl rollout restart deploy {{ include "app.fullname" . }}
+kubectl rollout restart deploy {{ include "app.fullname" . }} -n {{ .Release.Namespace }}
+
+sleep 5s
 
 curl -v -HHost:httpbin.example.com --resolve "httpbin.example.com:$SECURE_INGRESS_PORT:$INGRESS_HOST" --cacert .certs/example_certs1/example.com.crt "https://httpbin.example.com:$SECURE_INGRESS_PORT"
