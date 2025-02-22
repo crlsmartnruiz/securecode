@@ -1,0 +1,18 @@
+
+INSTRUCTIONS:
+export INGRESS_NAME=istio-ingress
+export INGRESS_NS=istio-ingress
+
+export INGRESS_HOST=$(kubectl -n "$INGRESS_NS" get service "$INGRESS_NAME" -o jsonpath='{.status.loadBalancer.ingress[0].hostname}')
+export INGRESS_PORT=$(kubectl -n "$INGRESS_NS" get service "$INGRESS_NAME" -o jsonpath='{.spec.ports[?(@.name=="http2")].port}')
+export SECURE_INGRESS_PORT=$(kubectl -n "$INGRESS_NS" get service "$INGRESS_NAME" -o jsonpath='{.spec.ports[?(@.name=="https")].port}')
+
+export INGRESS_HOST=$(nslookup $INGRESS_HOST | grep Address | awk '/Address:/ {print $2}' | sed -n '2p' )
+
+aws eks create-pod-identity-association --cluster-name demo-cluster --role-arn arn:aws:iam::864981735845:role/my-role --namespace {{ .Release.Namespace }} --service-account {{ include "app.serviceAccountName" . }} --region eu-west-2
+
+kubectl rollout restart deploy {{ include "app.fullname" . }} -n {{ .Release.Namespace }}
+
+sleep 5s
+
+curl -v -HHost:httpbin.example.com --resolve "httpbin.example.com:$SECURE_INGRESS_PORT:$INGRESS_HOST" --cacert .certs/example_certs1/example.com.crt "https://httpbin.example.com:$SECURE_INGRESS_PORT"

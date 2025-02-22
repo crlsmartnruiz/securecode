@@ -26,20 +26,3 @@ spec:
         credentialName: "{{ include "istio.fullname" . }}-tls"
       hosts:
         - httpbin.example.com
----
-apiVersion: networking.istio.io/v1
-kind: VirtualService
-metadata:
-  name: httpbin
-  namespace: default
-spec:
-  hosts:
-    - "httpbin.example.com"
-  gateways:
-    - istio-ingress/mygateway
-  http:
-    - route:
-        - destination:
-            port:
-              number: 80
-            host: api-service.default.svc.cluster.local
